@@ -20,7 +20,7 @@ class ReportGenerator:
         # Save JSON
         json_path = os.path.join(self.output_dir, f"{base_name}.json")
         with open(json_path, 'w', encoding='utf-8') as f:
-            f.write(report.model_dump_json(indent=2, ensure_ascii=False))
+            f.write(report.model_dump_json(indent=2))
         saved_files['json'] = json_path
         
         # Save HTML
