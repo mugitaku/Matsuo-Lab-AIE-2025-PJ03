@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>講義スライド ファクトチェッカー</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>講義スライド ファクトチェッカー</h1>
+            <p class="subtitle">PowerPoint・PDFファイルの事実確認を自動化</p>
+        </header>
+
+        <main>
+            <!-- File Upload Section -->
+            <section class="upload-section">
+                <h2>ファイルをアップロード</h2>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept=".ppt,.pptx,.pdf" hidden>
+                    <div class="upload-prompt">
+                        <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p>ファイルをドラッグ＆ドロップ<br>または<button class="browse-btn" onclick="document.getElementById('fileInput').click()">ファイルを選択</button></p>
+                        <span class="file-types">対応形式: PPT, PPTX, PDF (最大100MB)</span>
+                    </div>
+                </div>
+                <div id="fileInfo" class="file-info" style="display: none;">
+                    <span id="fileName"></span>
+                    <button class="remove-btn" onclick="removeFile()">×</button>
+                </div>
+            </section>
+
+            <!-- API Key Section -->
+            <section class="api-section">
+                <h3>Google Gemini API キー</h3>
+                <input type="password" id="apiKey" placeholder="APIキーを入力（環境変数で設定済みの場合は不要）" class="api-input">
+                <small class="help-text">APIキーは <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a> から取得できます</small>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="actions">
+                <button id="checkButton" class="primary-btn" onclick="startFactCheck()" disabled>
+                    ファクトチェックを開始
+                </button>
+                <button id="estimateButton" class="secondary-btn" onclick="showCostEstimate()">
+                    コスト試算
+                </button>
+            </section>
+
+            <!-- Quick Check Section -->
+            <section class="quick-check">
+                <h3>クイックチェック</h3>
+                <textarea id="quickCheckText" placeholder="チェックしたいテキストを入力" rows="3"></textarea>
+                <button class="secondary-btn" onclick="quickCheck()">テキストをチェック</button>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results" class="results-section" style="display: none;">
+                <h2>チェック結果</h2>
+                <div id="resultsSummary" class="summary-card"></div>
+                <div id="resultsDetail" class="results-detail"></div>
+                <div id="downloadLinks" class="download-links"></div>
+            </section>
+
+            <!-- Loading Indicator -->
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>ファクトチェック中...</p>
+            </div>
+
+            <!-- Cost Estimate Modal -->
+            <div id="costModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeCostModal()">&times;</span>
+                    <h2>コスト試算</h2>
+                    <div class="cost-calculator">
+                        <label>
+                            スライド数:
+                            <input type="number" id="slideCount" value="20" min="1">
+                        </label>
+                        <label>
+                            ファイル数:
+                            <input type="number" id="fileCount" value="1" min="1">
+                        </label>
+                        <button class="primary-btn" onclick="calculateCost()">計算</button>
+                        <div id="costResult" class="cost-result"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 講義スライド ファクトチェッカー | Powered by Google Gemini</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
